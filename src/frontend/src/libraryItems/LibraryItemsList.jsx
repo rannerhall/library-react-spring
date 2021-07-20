@@ -48,7 +48,7 @@ function LibraryItemsList({match}) {
                 </thead>
                 <tbody>
                 {libraryItems && libraryItems.map(libraryItems =>
-                    <tr key={libraryItems}>
+                    <tr key={libraryItems.libraryItemIdPk}>
                         <td>{libraryItems.title}</td>
                         <td>{libraryItems.author}</td>
                         <td>{libraryItems.pages}</td>

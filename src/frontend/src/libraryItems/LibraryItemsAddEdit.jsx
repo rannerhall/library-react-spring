@@ -11,30 +11,76 @@ function LibraryItemsAddEdit({history, match}) {
     const {id} = match.params;
     const isAddMode = !id;
 
+    const [customValidationSchema, setCustomValidationSchema] = useState();
+
+    const [libraryItem, setLibraryItem] = useState({});
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [categories, setCategories] = useState("");
+    const [selectedOption, setSelectedOption] = useState(selectedOption);
+
     const [showCategoryField, setShowCategoryField] = useState(false);
     const [showTitleField, setShowTitleField] = useState(false);
     const [showAuthorField, setShowAuthorField] = useState(false);
     const [showPageField, setShowPageField] = useState(false);
     const [showRunTimeField, setShowRunTimeField] = useState(false);
 
+    const bookValidationSchema = Yup.object().shape({
+        pages: Yup.number().required('Pages is required'),
+    });
+
+    const dvdValidationSchema = Yup.object().shape({
+        runTimeInMinutes: Yup.number().required('Run Time is required'),
+    });
+
     const validationSchema = Yup.object().shape({
         type: Yup.string().required('Type is required'),
-        categoryName: Yup.string()
-            .required('Category is required'),
-        title: Yup.string()
-            .required('Title is required'),
-        author: Yup.string()
-            .required('Author is required'),
-        pages: Yup.number()
-            .required('Pages is required'),
-        // runTimeMinutes: Yup.number()
-        //     .required('Run Time is required'),
-    });
+        categoryName: Yup.string().required('Category is required'),
+        title: Yup.string().required('Title is required'),
+        author: Yup.string().required('Author is required'),
+    })
 
     const {register, handleSubmit, reset, setValue, errors, formState} = useForm({
-        resolver: yupResolver(validationSchema)
+        resolver: yupResolver(validationSchema, customValidationSchema)
     });
 
+    const handleChange = selectedOption => {
+        setSelectedOption(selectedOption.value);
+        setValue("type", selectedOption.value);
+
+        setShowCategoryField(true);
+        setShowTitleField(true);
+        setShowAuthorField(true);
+
+        if (selectedOption.value === "book" || selectedOption.value === "referenceBook") {
+            setCustomValidationSchema(bookValidationSchema);
+            setShowPageField(true);
+            setShowRunTimeField(false);
+        }
+        if (selectedOption.value === "dvd" || selectedOption.value === "audioBook") {
+            setCustomValidationSchema(dvdValidationSchema);
+            setShowPageField(false);
+            setShowRunTimeField(true);
+        }
+    }
+
+    const selectList = [
+        {
+            label: "Book",
+            value: "book"
+        },
+        {
+            label: "DVD",
+            value: "dvd"
+        },
+        {
+            label: "Audio Book",
+            value: "audioBook"
+        },
+        {
+            label: "Reference Book",
+            value: "referenceBook"
+        }
+    ];
 
     function onSubmit(data) {
         return isAddMode ?
@@ -60,8 +106,6 @@ function LibraryItemsAddEdit({history, match}) {
             .catch(alertService.error);
     }
 
-    const [libraryItem, setLibraryItem] = useState({});
-
     useEffect(() => {
         if (!isAddMode) {
             libraryItemService.getById(id).then(libraryItem => {
@@ -72,54 +116,9 @@ function LibraryItemsAddEdit({history, match}) {
         }
     }, []);
 
-    const [selectedCategory, setSelectedCategory] = useState("");
-
-    const [categories, setCategories] = useState("");
-
     useEffect(() => {
         categoryService.getAll().then(x => setCategories(x));
     }, []);
-
-    const selectList = [
-        {
-            label: "Book",
-            value: "book"
-        },
-        {
-            label: "DVD",
-            value: "dvd"
-        },
-        {
-            label: "Audio Book",
-            value: "audioBook"
-        },
-        {
-            label: "Reference Book",
-            value: "referenceBook"
-        }
-    ];
-
-    const [selectedOption, setSelectedOption] = useState(selectedOption);
-
-    const handleChange = selectedOption => {
-        setSelectedOption(selectedOption.value);
-        setValue("type", selectedOption.value);
-        if (selectedOption.value === "book" || selectedOption.value === "referenceBook") {
-            setShowCategoryField(true);
-            setShowTitleField(true);
-            setShowAuthorField(true);
-            setShowPageField(true);
-            setShowRunTimeField(false);
-        }
-        if (selectedOption.value === "dvd" || selectedOption.value === "audioBook") {
-            setShowCategoryField(true);
-            setShowTitleField(true);
-            setShowTitleField(true);
-            setShowAuthorField(true);
-            setShowPageField(false);
-            setShowRunTimeField(true);
-        }
-    }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
@@ -127,25 +126,21 @@ function LibraryItemsAddEdit({history, match}) {
             <div className="form-row">
                 <div className="form-group col-5">
                     <label>Type</label>
-                    <Select {...register("type")}
-                            defaultValue={selectedOption}
+                    <Select {...register("type")} defaultValue={selectedOption}
                             options={selectList}
                             onChange={handleChange}
                             className={`${errors.type ? 'is-invalid' : ''}`}/>
                     <div className="invalid-feedback">{errors.type?.message}</div>
                 </div>
-
                 {!showCategoryField ? null : (
                     <div className="form-group col-5">
                         <label>Category</label>
-                        <select
-                            name="categoryName"
-                            ref={register}
-                            onChange={(e) => {
-                                const category = e.target.value;
-                                setSelectedCategory(category)
-                            }}
-                            className={`form-control ${errors.categoryName ? 'is-invalid' : ''}`}>
+                        <select name="categoryName" ref={register}
+                                onChange={(e) => {
+                                    const category = e.target.value;
+                                    setSelectedCategory(category)
+                                }}
+                                className={`form-control ${errors.categoryName ? 'is-invalid' : ''}`}>
                             <option value=""/>
                             {categories && categories.map(category =>
                                 <option value={category.categoryName}>{category.categoryName}</option>
@@ -154,7 +149,6 @@ function LibraryItemsAddEdit({history, match}) {
                         <div className="invalid-feedback">{errors.categoryName?.message}</div>
                     </div>
                 )}
-
                 {!showTitleField ? null : (
                     <div className="form-group col-5">
                         <label>Title</label>
@@ -163,7 +157,6 @@ function LibraryItemsAddEdit({history, match}) {
                         <div className="invalid-feedback">{errors.title?.message}</div>
                     </div>
                 )}
-
                 {!showAuthorField ? null : (
                     <div className="form-group col-5">
                         <label>Author</label>
@@ -172,7 +165,6 @@ function LibraryItemsAddEdit({history, match}) {
                         <div className="invalid-feedback">{errors.author?.message}</div>
                     </div>
                 )}
-
                 {!showPageField ? null : (
                     <div className="form-group col-5">
                         <label>Pages</label>
@@ -181,7 +173,6 @@ function LibraryItemsAddEdit({history, match}) {
                         <div className="invalid-feedback">{errors.pages?.message}</div>
                     </div>
                 )}
-
                 {!showRunTimeField ? null : (
                     <div className="form-group col-5">
                         <label>Run time In Minutes</label>
@@ -190,7 +181,6 @@ function LibraryItemsAddEdit({history, match}) {
                         <div className="invalid-feedback">{errors.runTimeInMinutes?.message}</div>
                     </div>
                 )}
-
             </div>
             <div className="form-group">
                 <button type="submit" disabled={formState.isSubmitting} className="btn btn-primary">

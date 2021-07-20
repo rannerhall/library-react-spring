@@ -125,10 +125,7 @@ function EmployeesAddEdit({history, match}) {
             <div className="form-row">
                 <div className="form-group col-3">
                     <label>Role</label>
-                    <select
-                        name="role"
-                        ref={register}
-
+                    <select name="role" ref={register}
                         className={`form-control ${errors.role ? 'is-invalid' : ''}`}>
                         <option value=""/>
                         <option value="employee">Employee</option>
