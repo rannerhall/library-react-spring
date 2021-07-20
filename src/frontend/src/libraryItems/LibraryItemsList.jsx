@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 
 import {libraryItemService} from '@/_services';
@@ -11,9 +11,12 @@ import {libraryItemService} from '@/_services';
 function LibraryItemsList({match}) {
     const {path} = match;
     const [libraryItems, setLibraryItems] = useState(null);
+    const [showCheckoutLink, setShowCheckoutLink] = useState(true);
+    const [showCheckInLink, setShowCheckInLink] = useState(false)
 
     useEffect(() => {
-        libraryItemService.getAll().then(x => setLibraryItems(x));
+        libraryItemService.getAll().then(x =>
+            setLibraryItems(x));
     }, []);
 
     function deleteLibraryItems(libraryItemIdPk) {
@@ -36,6 +39,7 @@ function LibraryItemsList({match}) {
                 <thead>
                 <tr>
                     <th style={{width: '15%'}}>Title</th>
+                    <th style={{width: '15%'}}>Acronym Title</th>
                     <th style={{width: '15%'}}>Author</th>
                     <th style={{width: '15%'}}>Pages</th>
                     <th style={{width: '15%'}}>Run time</th>
@@ -50,10 +54,15 @@ function LibraryItemsList({match}) {
                 {libraryItems && libraryItems.map(libraryItems =>
                     <tr key={libraryItems.libraryItemIdPk}>
                         <td>{libraryItems.title}</td>
+                        <td>
+                            {libraryItems.title.split(/\s/)
+                            .reduce(function(accumulator, word) {
+                                return accumulator + word.charAt(0);
+                            }, '')}</td>
                         <td>{libraryItems.author}</td>
                         <td>{libraryItems.pages}</td>
                         <td>{libraryItems.runTimeInMinutes}</td>
-                        <td>{libraryItems.isBorrowable}</td>
+                        <td>{String(libraryItems.borrowable)}</td>
                         <td>{libraryItems.borrower}</td>
                         <td>{libraryItems.borrowDate}</td>
                         <td>{libraryItems.type}</td>
@@ -61,6 +70,14 @@ function LibraryItemsList({match}) {
                         <td style={{whiteSpace: 'nowrap'}}>
                             <Link to={`${path}/edit/${libraryItems.libraryItemIdPk}`}
                                   className="btn btn-sm btn-primary mr-1">Edit</Link>
+                            {!showCheckoutLink ? null : (
+                                <Link to={`${path}/borrow/${libraryItems.libraryItemIdPk}`}
+                                      className="btn btn-sm btn-primary mr-1">Check Out</Link>
+                            )}
+                            {!showCheckInLink ? null : (
+                                <Link to={`${path}/borrow/${libraryItems.libraryItemIdPk}`}
+                                      className="btn btn-sm btn-primary mr-1">Check In</Link>
+                            )}
                             <button onClick={() => deleteLibraryItems(libraryItems.libraryItemIdPk)}
                                     className="btn btn-sm btn-danger btn-delete"
                                     disabled={libraryItems.isDeleting}>
@@ -68,8 +85,6 @@ function LibraryItemsList({match}) {
                                     ? <span className="spinner-border spinner-border-sm"/>
                                     : <span>Delete</span>
                                 }
-                                <Link to={`${path}/borrow/${libraryItems.libraryItemIdPk}`}
-                                      className="btn btn-sm btn-primary mr-1">Check Out</Link>
                             </button>
                         </td>
                     </tr>
