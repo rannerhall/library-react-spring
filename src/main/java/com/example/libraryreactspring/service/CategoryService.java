@@ -2,26 +2,24 @@ package com.example.libraryreactspring.service;
 
 import com.example.libraryreactspring.entity.Category;
 import com.example.libraryreactspring.repository.CategoryRepository;
+import com.example.libraryreactspring.validator.ValidatorMessage;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final Validator validator;
+    private final ValidatorMessage validator;
 
     @Inject
-    public CategoryService(CategoryRepository categoryRepository, Validator validator) {
+    public CategoryService(CategoryRepository categoryRepository, ValidatorMessage validator) {
         this.categoryRepository = categoryRepository;
         this.validator = validator;
     }
+
 
     public List<Category> getCategories() {
         return categoryRepository.findAll();
@@ -38,15 +36,10 @@ public class CategoryService {
     }
 
     private void checkIfNameExists(Category category) {
-        Set<ConstraintViolation<Category>> violations = validator.validate(category);
         List<Category> categoriesList = getCategories();
         for (Category categoryFromList : categoriesList) {
             if (categoryFromList.getCategoryName().equals(category.getCategoryName())) {
-                StringBuilder stringBuilder = new StringBuilder();
-                for (ConstraintViolation<Category> constraintViolation : violations) {
-                    stringBuilder.append(constraintViolation.getMessage());
-                }
-                throw new ConstraintViolationException("Category name must be unique, please choose another genre" + stringBuilder, violations);
+                validator.validate("Category name must be unique, please choose another genre", category);
             }
         }
     }
