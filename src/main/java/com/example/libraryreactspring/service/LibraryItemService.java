@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -45,6 +46,7 @@ public class LibraryItemService {
     public LibraryItem createLibraryItem(@Valid LibraryItem libraryItem, String categoryName) {
         for (Category category : getAllCategories()) {
             if (categoryName.equals(category.getCategoryName())) {
+                libraryItem.setBorrowable(!libraryItem.getType().equals(REFERENCE_BOOK));
                 libraryItemRepository.save(libraryItem);
                 category.addLibraryItem(libraryItem);
                 categoryRepository.save(category);
@@ -55,10 +57,16 @@ public class LibraryItemService {
 
     public LibraryItem editLibraryItem(Long libraryItemIdPk, LibraryItem libraryItem) {
         LibraryItem libraryItemToUpdate = getLibraryItemById(libraryItemIdPk);
+        if (libraryItemToUpdate.isBorrowable()) {
+            libraryItemToUpdate.setBorrower(libraryItem.getBorrower());
+            libraryItemToUpdate.setBorrowable(false);
+            libraryItemToUpdate.setBorrowDate(LocalDate.now());
+            libraryItem.setTitle(libraryItemToUpdate.getTitle());
+            libraryItem.setAuthor(libraryItemToUpdate.getAuthor());
+            libraryItemToUpdate = libraryItemRepository.save(libraryItem);
+            return libraryItemToUpdate;
+        }
         libraryItemToUpdate.setAuthor(libraryItem.getAuthor());
-        libraryItemToUpdate.setBorrowable(libraryItem.isBorrowable());
-        libraryItemToUpdate.setBorrowDate(libraryItem.getBorrowDate());
-        libraryItemToUpdate.setBorrower(libraryItem.getBorrower());
         libraryItemToUpdate.setPages(libraryItem.getPages());
         libraryItemToUpdate.setTitle(libraryItem.getTitle());
         libraryItemToUpdate.setType(libraryItem.getType());
