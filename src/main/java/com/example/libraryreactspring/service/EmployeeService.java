@@ -40,29 +40,48 @@ public class EmployeeService {
     public Employee createEmployee(@Valid Employee employee, String role, int rank, String managerId) {
         long parsedManagerId = Long.parseLong(managerId);
         employee.setSalary(calculateSalaryCoefficient.calculateSalary(employee, role, rank));
-        if (role.equals(EMPLOYEE)) {
-            if (parsedManagerId == 0) {
-                validator.validate("Employee must have a manager", employee);
-            } else {
-                employee.setManagerId(parsedManagerId);
-            }
-        }
-        if (role.equals(MANAGER)) {
-            employee.setManager(true);
-            employeeRepository.save(employee);
-            employee.setManagerId(employee.getEmployeeId());
-        }
-        if (role.equals(CEO)) {
-            for (Employee ceo : getEmployees()) {
-                if (ceo.isCeo()) {
-                    validator.validate("There can be only one!", employee);
-                } else {
-                    employee.setCeo(true);
-                }
-            }
+        switch (role) {
+            case EMPLOYEE:
+                setAndValidateEmployee(employee, parsedManagerId);
+                break;
+            case MANAGER:
+                setAndValidateManager(employee);
+                break;
+            case CEO:
+                setAndValidateCeo(employee);
+                break;
         }
         employeeRepository.save(employee);
         return employee;
+    }
+
+    private void setAndValidateCeo(Employee employee) {
+        for (Employee ceo : getEmployees()) {
+            if (ceo.isCeo()) {
+                validator.validate("There can be only one!", employee);
+            }
+        }
+        employeeRepository.save(employee);
+        employee.setCeo(true);
+        employee.setManagerId(employee.getEmployeeId());
+    }
+
+    private void setAndValidateManager(Employee employee) {
+        employeeRepository.save(employee);
+        employee.setManager(true);
+        employee.setManagerId(employee.getEmployeeId());
+    }
+
+    private void setAndValidateEmployee(Employee employee, long parsedManagerId) {
+        if (parsedManagerId == 0) {
+            validator.validate("Employee must have a manager", employee);
+        }
+        for (Employee ceo : getEmployees()) {
+            if (ceo.isCeo() && ceo.getEmployeeId().equals(parsedManagerId)) {
+                validator.validate("Employee cannot have CEO as manager.", employee);
+            }
+        }
+        employee.setManagerId(parsedManagerId);
     }
 
     public Employee editEmployee(Long employeeId, Employee employee) {
