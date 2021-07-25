@@ -50,6 +50,8 @@ public class EmployeeService {
             case CEO:
                 setAndValidateCeo(employee);
                 break;
+            default:
+                validator.validate("Please choose a role", employee);
         }
         employeeRepository.save(employee);
         return employee;
