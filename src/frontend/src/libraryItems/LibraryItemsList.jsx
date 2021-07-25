@@ -26,7 +26,7 @@ function LibraryItemsList({match}) {
             return x;
         }));
         libraryItemService.delete(libraryItemIdPk).then(() => {
-            setLibraryItems(libraryItems => libraryItems.filter(x => x.libraryItemIdPk !== libraryItemIdPk));
+            setLibraryItems(libraryItem => libraryItem.filter(x => x.libraryItemIdPk !== libraryItemIdPk));
         });
     }
 
@@ -50,36 +50,36 @@ function LibraryItemsList({match}) {
                 </tr>
                 </thead>
                 <tbody>
-                {libraryItems && libraryItems.map(libraryItems =>
-                    <tr key={libraryItems.libraryItemIdPk}>
-                        <td>{libraryItems.title}</td>
-                        <td>{libraryItems.title.split(/\s/)
+                {libraryItems && libraryItems.map(libraryItem =>
+                    <tr key={libraryItem.libraryItemIdPk}>
+                        <td>{libraryItem.title}</td>
+                        <td>{libraryItem.title.split(/\s/)
                             .reduce(function(accumulator, word) {
                                 return accumulator + word.charAt(0);
                             }, '')}</td>
-                        <td>{libraryItems.author}</td>
-                        <td>{libraryItems.pages}</td>
-                        <td>{libraryItems.runTimeInMinutes}</td>
-                        <td>{String(libraryItems.borrowable)}</td>
-                        <td>{libraryItems.borrower}</td>
-                        <td>{libraryItems.borrowDate}</td>
-                        <td>{libraryItems.type}</td>
+                        <td>{libraryItem.author}</td>
+                        <td>{libraryItem.pages}</td>
+                        <td>{libraryItem.runTimeInMinutes}</td>
+                        <td>{String(libraryItem.borrowable)}</td>
+                        <td>{libraryItem.borrower}</td>
+                        <td>{libraryItem.borrowDate}</td>
+                        <td>{libraryItem.type}</td>
 
                         <td style={{whiteSpace: 'nowrap'}}>
-                            <Link to={`${path}/edit/${libraryItems.libraryItemIdPk}`}
+                            <Link to={`${path}/edit/${libraryItem.libraryItemIdPk}`}
                                   className="btn btn-sm btn-primary mr-1">Edit</Link>
                             {!showCheckoutLink ? null : (
-                                <Link to={`${path}/borrow/${libraryItems.libraryItemIdPk}`}
+                                <Link to={`${path}/borrow/${libraryItem.libraryItemIdPk}`}
                                       className="btn btn-sm btn-primary mr-1">Check Out</Link>
                             )}
                             {!showCheckInLink ? null : (
-                                <Link to={`${path}/borrow/${libraryItems.libraryItemIdPk}`}
+                                <Link to={`${path}/borrow/${libraryItem.libraryItemIdPk}`}
                                       className="btn btn-sm btn-primary mr-1">Check In</Link>
                             )}
-                            <button onClick={() => deleteLibraryItems(libraryItems.libraryItemIdPk)}
+                            <button onClick={() => deleteLibraryItems(libraryItem.libraryItemIdPk)}
                                     className="btn btn-sm btn-danger btn-delete"
-                                    disabled={libraryItems.isDeleting}>
-                                {libraryItems.isDeleting
+                                    disabled={libraryItem.isDeleting}>
+                                {libraryItem.isDeleting
                                     ? <span className="spinner-border spinner-border-sm"/>
                                     : <span>Delete</span>
                                 }

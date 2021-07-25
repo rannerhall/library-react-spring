@@ -13,8 +13,8 @@ function LibraryItemsAddEdit({history, match}) {
 
     const [customValidationSchema, setCustomValidationSchema] = useState();
 
-    const [libraryItem, setLibraryItem] = useState({});
-    const [selectedCategory, setSelectedCategory] = useState("");
+    const [setLibraryItem] = useState({});
+    const [setSelectedCategory] = useState("");
     const [categories, setCategories] = useState("");
     const [selectedOption, setSelectedOption] = useState(selectedOption);
 
@@ -43,20 +43,20 @@ function LibraryItemsAddEdit({history, match}) {
         resolver: yupResolver(validationSchema, customValidationSchema)
     });
 
-    const handleChange = selectedOption => {
-        setSelectedOption(selectedOption.value);
-        setValue("type", selectedOption.value);
+    const handleChange = option => {
+        setSelectedOption(option.value);
+        setValue("type", option.value);
 
         setShowCategoryField(true);
         setShowTitleField(true);
         setShowAuthorField(true);
 
-        if (selectedOption.value === "book" || selectedOption.value === "referenceBook") {
+        if (option.value === "book" || option.value === "referenceBook") {
             setCustomValidationSchema(bookValidationSchema);
             setShowPageField(true);
             setShowRunTimeField(false);
         }
-        if (selectedOption.value === "dvd" || selectedOption.value === "audioBook") {
+        if (option.value === "dvd" || option.value === "audioBook") {
             setCustomValidationSchema(dvdValidationSchema);
             setShowPageField(false);
             setShowRunTimeField(true);

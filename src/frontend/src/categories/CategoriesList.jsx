@@ -19,7 +19,7 @@ function CategoriesList({match}) {
             return x;
         }));
         categoryService.delete(categoryIdPk).then(() => {
-            setCategories(categories => categories.filter(x => x.categoryIdPk !== categoryIdPk));
+            setCategories(category => category.filter(x => x.categoryIdPk !== categoryIdPk));
         });
     }
 

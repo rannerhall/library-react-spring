@@ -19,7 +19,7 @@ function EmployeesList({match}) {
             return x;
         }));
         employeeService.delete(employeeId).then(() => {
-            setEmployees(employees => employees.filter(x => x.employeeId !== employeeId));
+            setEmployees(employee => employee.filter(x => x.employeeId !== employeeId));
         });
     }
 
