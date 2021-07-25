@@ -67,31 +67,29 @@ function EmployeesAddEdit({history, match}) {
 
     const [employees, setEmployees] = useState("");
 
-    //console.log(managers);
-
     useEffect(() => {
         employeeService.getAll().then(x => setEmployees(x));
     }, []);
 
-    const Manager = () => (
-        <div className="form-group col-5">
-            <label>Manager</label>
-            <select
-                name="managerId"
-                ref={register}
-                onChange={(e) => {
-                    const selectedEmployee = e.target.value;
-                    setManagers(selectedEmployee);
-                }}
-                className={`form-control ${errors.manager ? 'is-invalid' : ''}`}>
-                <option value=""/>
-                {employees && employees.map(manager =>
-                    <option value={manager.employeeId}>{manager.firstName} {manager.lastName}</option>
-                )}
-            </select>
-            <div className="invalid-feedback">{errors.manager?.message}</div>
-        </div>
-    )
+    // const Manager = () => (
+    //     <div className="form-group col-5">
+    //         <label>Manager</label>
+    //         <select
+    //             name="managerId"
+    //             ref={register}
+    //             onChange={(e) => {
+    //                 const selectedEmployee = e.target.value;
+    //                 setManagers(selectedEmployee);
+    //             }}
+    //             className={`form-control ${errors.manager ? 'is-invalid' : ''}`}>
+    //             <option value=""/>
+    //             {employees && employees.map(manager =>
+    //                 <option value={manager.employeeId}>{manager.firstName} {manager.lastName}</option>
+    //             )}
+    //         </select>
+    //         <div className="invalid-feedback">{errors.manager?.message}</div>
+    //     </div>
+    // )
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
@@ -126,7 +124,7 @@ function EmployeesAddEdit({history, match}) {
                 <div className="form-group col-3">
                     <label>Role</label>
                     <select name="role" ref={register}
-                        className={`form-control ${errors.role ? 'is-invalid' : ''}`}>
+                            className={`form-control ${errors.role ? 'is-invalid' : ''}`}>
                         <option value=""/>
                         <option value="employee">Employee</option>
                         <option value="manager">Manger</option>
@@ -148,7 +146,10 @@ function EmployeesAddEdit({history, match}) {
                     className={`form-control ${errors.managerId ? 'is-invalid' : ''}`}>
                     <option value=""/>
                     {employees && employees.map(manager =>
-                        <option value={manager.employeeId}>{manager.firstName} {manager.lastName}</option>
+                        <option value={manager.employeeId}>
+                            {manager.manager ? "(Manager)" : null}
+                            {manager.ceo ? "(CEO)" : null}
+                            {manager.firstName} {manager.lastName}</option>
                     )}
                 </select>
                 <div className="invalid-feedback">{errors.managerId?.message}</div>

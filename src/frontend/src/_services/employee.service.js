@@ -20,7 +20,9 @@ function getById(id) {
 }
 
 function create(params) {
-    console.log("Params: ", params);
+    if (params.managerId === "") {
+        params.managerId = "0"
+    }
     return fetchWrapper.post(`${baseUrl}/${params.role}/${params.rank}/${params.managerId}`, params);
 }
 

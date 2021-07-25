@@ -1,5 +1,5 @@
 import config from 'config';
-import { fetchWrapper } from '@/_helpers';
+import {fetchWrapper} from '@/_helpers';
 
 const baseUrl = `${config.apiUrl}/libraryItem`;
 
@@ -20,7 +20,6 @@ function getById(id) {
 }
 
 function create(params) {
-    console.log("Params: ", params);
     return fetchWrapper.post(`${baseUrl}/${params.categoryName}`, params);
 }
 

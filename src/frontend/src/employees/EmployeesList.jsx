@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 
 import {employeeService} from '@/_services';
@@ -6,7 +6,6 @@ import {employeeService} from '@/_services';
 function EmployeesList({match}) {
     const {path} = match;
     const [employees, setEmployees] = useState(null);
-    console.log("Employee: ",employees);
 
     useEffect(() => {
         employeeService.getAll().then(x => setEmployees(x));
@@ -31,7 +30,8 @@ function EmployeesList({match}) {
             <table className="table table-striped">
                 <thead>
                 <tr>
-                    <th style={{width: '30%'}}>Name</th>
+                    <th style={{width: '30%'}}>First Name</th>
+                    <th style={{width: '30%'}}>Last Name</th>
                     <th style={{width: '30%'}}>Salary</th>
                     <th style={{width: '30%'}}>Role</th>
                     <th style={{width: '10%'}}/>
@@ -40,9 +40,13 @@ function EmployeesList({match}) {
                 <tbody>
                 {employees && employees.map(employee =>
                     <tr key={employee.employeeId}>
-                        <td>{employee.firstName} {employee.lastName}</td>
+                        <td>{employee.firstName}</td>
+                        <td>{employee.lastName}</td>
                         <td>{employee.salary}</td>
-                        <td>{employee.role}</td>
+                        <td>
+                            {employee.manager ? "Manager" : null}
+                            {employee.ceo ? "CEO" : null}
+                            {employee.manager === false && employee.ceo === false ? "Employee" : null}</td>
                         <td style={{whiteSpace: 'nowrap'}}>
                             <Link to={`${path}/edit/${employee.employeeId}`}
                                   className="btn btn-sm btn-primary mr-1">Edit</Link>

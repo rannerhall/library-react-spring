@@ -6,7 +6,6 @@ import {libraryItemService} from '@/_services';
 //• Listing library items should be sorted by Category Name. This can be changed to
 //  Type by the user. (This change need to persist in current session but not after
 //  application restart)
-//• Acronym after the title of library items (e.g. “The title (TT)”)
 
 function LibraryItemsList({match}) {
     const {path} = match;
@@ -54,8 +53,7 @@ function LibraryItemsList({match}) {
                 {libraryItems && libraryItems.map(libraryItems =>
                     <tr key={libraryItems.libraryItemIdPk}>
                         <td>{libraryItems.title}</td>
-                        <td>
-                            {libraryItems.title.split(/\s/)
+                        <td>{libraryItems.title.split(/\s/)
                             .reduce(function(accumulator, word) {
                                 return accumulator + word.charAt(0);
                             }, '')}</td>
