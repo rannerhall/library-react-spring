@@ -23,6 +23,7 @@ function CheckOut({history, match}) {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
+            <h1>Check Out</h1>
             <div className="form-row">
                 <div className="form-group col-5">
                     <label>Borrower</label>

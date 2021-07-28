@@ -23,6 +23,7 @@ function CheckIn({history, match}) {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
+            <h1>Check In</h1>
             <div className="form-group">
                 <button type="submit" disabled={formState.isSubmitting} className="btn btn-primary">
                     {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"/>}

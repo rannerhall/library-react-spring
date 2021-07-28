@@ -4,10 +4,10 @@ export const libraryItemService = {
     onSubmit
 };
 
-function onSubmit(id, data, isAddMode, history) {
+function onSubmit(libraryItemId, data, isAddMode, history) {
     return isAddMode ?
         createLibraryItem(data, history) :
-        updateLibraryItem(id, data, history);
+        updateLibraryItem(libraryItemId, data, history);
 }
 
 function createLibraryItem(data, history) {
