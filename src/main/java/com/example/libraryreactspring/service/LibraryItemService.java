@@ -19,9 +19,6 @@ public class LibraryItemService {
     private final LibraryItemRepository libraryItemRepository;
     private final CategoryRepository categoryRepository;
 
-    private static final String BOOK = "book";
-    private static final String DVD = "dvd";
-    private static final String AUDIO_BOOK = "audioBook";
     private static final String REFERENCE_BOOK = "referenceBook";
 
     @Inject
@@ -57,12 +54,20 @@ public class LibraryItemService {
 
     public LibraryItem editLibraryItem(Long libraryItemIdPk, LibraryItem libraryItem) {
         LibraryItem libraryItemToUpdate = getLibraryItemById(libraryItemIdPk);
+        libraryItem.setTitle(libraryItemToUpdate.getTitle());
+        libraryItem.setAuthor(libraryItemToUpdate.getAuthor());
+
         if (libraryItemToUpdate.isBorrowable()) {
             libraryItemToUpdate.setBorrower(libraryItem.getBorrower());
             libraryItemToUpdate.setBorrowable(false);
             libraryItemToUpdate.setBorrowDate(LocalDate.now());
-            libraryItem.setTitle(libraryItemToUpdate.getTitle());
-            libraryItem.setAuthor(libraryItemToUpdate.getAuthor());
+            libraryItemToUpdate = libraryItemRepository.save(libraryItem);
+            return libraryItemToUpdate;
+        }
+        if (!libraryItemToUpdate.isBorrowable()) {
+            libraryItemToUpdate.setBorrower(null);
+            libraryItemToUpdate.setBorrowable(true);
+            libraryItemToUpdate.setBorrowDate(null);
             libraryItemToUpdate = libraryItemRepository.save(libraryItem);
             return libraryItemToUpdate;
         }
