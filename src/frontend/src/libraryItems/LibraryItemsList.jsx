@@ -10,9 +10,6 @@ import {libraryItemController} from '@/_services';
 function LibraryItemsList({match}) {
     const {path} = match;
     const [libraryItems, setLibraryItems] = useState(null);
-    const [showCheckoutLink, setShowCheckoutLink] = useState(true);
-    const [showCheckInLink, setShowCheckInLink] = useState(false)
-    console.log("LibraryItems: ", libraryItems);
 
     useEffect(() => {
         libraryItemController.getAll().then(x =>
@@ -55,13 +52,21 @@ function LibraryItemsList({match}) {
                     <tr key={libraryItem.libraryItemIdPk}>
                         <td>{libraryItem.title}</td>
                         <td>{libraryItem.title.split(/\s/)
-                            .reduce(function(accumulator, word) {
+                            .reduce(function (accumulator, word) {
                                 return accumulator + word.charAt(0);
                             }, '')}</td>
                         <td>{libraryItem.author}</td>
                         <td>{libraryItem.pages}</td>
                         <td>{libraryItem.runTimeInMinutes}</td>
-                        <td>{String(libraryItem.borrowable)}</td>
+                        <td>{libraryItem.borrowable ?
+                            <Link
+                                to={`${path}/checkOut/${libraryItem.libraryItemIdPk}`}
+                                className="btn btn-sm btn-primary mr-1">Check Out</Link>
+                            :
+                            <Link
+                                to={`${path}/checkIn/${libraryItem.libraryItemIdPk}`}
+                                className="btn btn-sm btn-primary mr-1">Check In</Link>}
+                        </td>
                         <td>{libraryItem.borrower}</td>
                         <td>{libraryItem.borrowDate}</td>
                         <td>{libraryItem.type}</td>
@@ -69,14 +74,6 @@ function LibraryItemsList({match}) {
                         <td style={{whiteSpace: 'nowrap'}}>
                             <Link to={`${path}/edit/${libraryItem.libraryItemIdPk}`}
                                   className="btn btn-sm btn-primary mr-1">Edit</Link>
-                            {!showCheckoutLink ? null : (
-                                <Link to={`${path}/borrow/${libraryItem.libraryItemIdPk}`}
-                                      className="btn btn-sm btn-primary mr-1">Check Out</Link>
-                            )}
-                            {!showCheckInLink ? null : (
-                                <Link to={`${path}/borrow/${libraryItem.libraryItemIdPk}`}
-                                      className="btn btn-sm btn-primary mr-1">Check In</Link>
-                            )}
                             <button onClick={() => deleteLibraryItems(libraryItem.libraryItemIdPk)}
                                     className="btn btn-sm btn-danger btn-delete"
                                     disabled={libraryItem.isDeleting}>

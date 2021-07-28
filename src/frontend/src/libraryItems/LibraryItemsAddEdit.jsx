@@ -6,7 +6,6 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {categoryService, libraryItemController} from '@/_services';
 import {libraryItemService} from "@/libraryItems/LibraryItemService";
 import ToggleItemFields from "@/libraryItems/ToggleItemFields";
-import ValidateLibraryItems from "@/libraryItems/ValidateLibraryItems";
 
 function LibraryItemsAddEdit({history, match}) {
     const {id} = match.params;
