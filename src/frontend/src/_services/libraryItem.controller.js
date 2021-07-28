@@ -3,7 +3,7 @@ import {fetchWrapper} from '@/_helpers';
 
 const baseUrl = `${config.apiUrl}/libraryItem`;
 
-export const libraryItemService = {
+export const libraryItemController = {
     getAll,
     getById,
     create,

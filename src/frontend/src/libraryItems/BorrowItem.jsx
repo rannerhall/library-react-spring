@@ -1,5 +1,5 @@
 import React from "react";
-import {alertService, libraryItemService} from "@/_services";
+import {alertService, libraryItemController} from "@/_services";
 import {useForm} from "react-hook-form";
 import {Link} from "react-router-dom";
 
@@ -13,7 +13,7 @@ function Borrower({history, match}) {
     }
 
     function checkOutLibraryItem(id, data) {
-        return libraryItemService.update(id, data)
+        return libraryItemController.update(id, data)
             .then(() => {
                 alertService.success('Checkout complete', {keepAfterRouteChange: true});
                 history.push('..');

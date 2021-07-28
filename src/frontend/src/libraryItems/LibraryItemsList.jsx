@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 
-import {libraryItemService} from '@/_services';
+import {libraryItemController} from '@/_services';
 
 //• Listing library items should be sorted by Category Name. This can be changed to
 //  Type by the user. (This change need to persist in current session but not after
@@ -12,9 +12,10 @@ function LibraryItemsList({match}) {
     const [libraryItems, setLibraryItems] = useState(null);
     const [showCheckoutLink, setShowCheckoutLink] = useState(true);
     const [showCheckInLink, setShowCheckInLink] = useState(false)
+    console.log("LibraryItems: ", libraryItems);
 
     useEffect(() => {
-        libraryItemService.getAll().then(x =>
+        libraryItemController.getAll().then(x =>
             setLibraryItems(x));
     }, []);
 
@@ -25,7 +26,7 @@ function LibraryItemsList({match}) {
             }
             return x;
         }));
-        libraryItemService.delete(libraryItemIdPk).then(() => {
+        libraryItemController.delete(libraryItemIdPk).then(() => {
             setLibraryItems(libraryItem => libraryItem.filter(x => x.libraryItemIdPk !== libraryItemIdPk));
         });
     }
