@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 
-import {categoryService} from '@/_services';
+import {categoryController} from '@/_services';
 
 function CategoriesList({match}) {
     const {path} = match;
     const [categories, setCategories] = useState(null);
 
     useEffect(() => {
-        categoryService.getAll().then(x => setCategories(x));
+        categoryController.getAll().then(x => setCategories(x));
     }, []);
 
     function deleteCategory(categoryIdPk) {
@@ -18,7 +18,7 @@ function CategoriesList({match}) {
             }
             return x;
         }));
-        categoryService.delete(categoryIdPk).then(() => {
+        categoryController.delete(categoryIdPk).then(() => {
             setCategories(category => category.filter(x => x.categoryIdPk !== categoryIdPk));
         });
     }

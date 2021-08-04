@@ -4,7 +4,7 @@ import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 
-import {categoryService, alertService} from '@/_services';
+import {categoryController, alertService} from '@/_services';
 
 function CategoriesAddEdit({history, match}) {
     const {id} = match.params;
@@ -26,7 +26,7 @@ function CategoriesAddEdit({history, match}) {
     }
 
     function createCategory(data) {
-        return categoryService.create(data)
+        return categoryController.create(data)
             .then(() => {
                 alertService.success('Category added', {keepAfterRouteChange: true});
                 history.push('.');
@@ -35,7 +35,7 @@ function CategoriesAddEdit({history, match}) {
     }
 
     function updateCategory(id, data) {
-        return categoryService.update(id, data)
+        return categoryController.update(id, data)
             .then(() => {
                 alertService.success('Category updated', {keepAfterRouteChange: true});
                 history.push('..');
@@ -47,7 +47,7 @@ function CategoriesAddEdit({history, match}) {
 
     useEffect(() => {
         if (!isAddMode) {
-            categoryService.getById(id).then(category => {
+            categoryController.getById(id).then(category => {
                 const fields = ['categoryName'];
                 fields.forEach(field => setValue(field, category[field]));
                 setCategory(category);

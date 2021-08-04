@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 
-import {employeeService} from '@/_services';
+import {employeeController} from '@/_services';
 
 function EmployeesList({match}) {
     const {path} = match;
     const [employees, setEmployees] = useState(null);
 
     useEffect(() => {
-        employeeService.getAll().then(x => setEmployees(x));
+        employeeController.getAll().then(x => setEmployees(x));
     }, []);
 
     function deleteEmployee(employeeId) {
@@ -18,7 +18,7 @@ function EmployeesList({match}) {
             }
             return x;
         }));
-        employeeService.delete(employeeId).then(() => {
+        employeeController.delete(employeeId).then(() => {
             setEmployees(employee => employee.filter(x => x.employeeId !== employeeId));
         });
     }

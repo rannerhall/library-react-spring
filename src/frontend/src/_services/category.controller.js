@@ -1,9 +1,9 @@
 import config from 'config';
 import {fetchWrapper} from '@/_helpers';
 
-const baseUrl = `${config.apiUrl}/employee`;
+const baseUrl = `${config.apiUrl}/category`;
 
-export const employeeService = {
+export const categoryController = {
     getAll,
     getById,
     create,
@@ -20,10 +20,7 @@ function getById(id) {
 }
 
 function create(params) {
-    if (params.managerId === "") {
-        params.managerId = "0"
-    }
-    return fetchWrapper.post(`${baseUrl}/${params.role}/${params.rank}/${params.managerId}`, params);
+    return fetchWrapper.post(baseUrl, params);
 }
 
 function update(id, params) {
@@ -32,4 +29,5 @@ function update(id, params) {
 
 function _delete(id) {
     return fetchWrapper.delete(`${baseUrl}/${id}`);
+
 }

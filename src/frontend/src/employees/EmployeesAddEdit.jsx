@@ -4,58 +4,48 @@ import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 
-import {alertService, employeeService} from '@/_services';
+import {employeeController} from '@/_services';
+import {employeeService} from "@/employees/EmployeeService";
 
 function EmployeesAddEdit({history, match}) {
     const {id} = match.params;
     const isAddMode = !id;
 
     const [showManagerField, setShowManagerField] = useState(false);
+    const [role, setRole] = useState(null);
+    const [managers, setManagers] = useState("");
+    const [employee, setEmployee] = useState({});
+    const [employees, setEmployees] = useState("");
+
+    const handleRoleChange = (option) => {
+        setRole(option.target.value);
+        setShowManagerField(true);
+    }
 
     const validationSchema = Yup.object().shape({
-        // title: Yup.string()
-        //     .required('Title is required'),
-        // firstName: Yup.string()
-        //     .required('First Name is required'),
-        // lastName: Yup.string()
-        //     .required('Last Name is required'),
-        // role: Yup.string()
-        //     .required('Role is required'),
+        title: Yup.string()
+            .required('Title is required'),
+        firstName: Yup.string()
+            .required('First Name is required'),
+        lastName: Yup.string()
+            .required('Last Name is required'),
+        salary: Yup.number()
+            .required('Salary is required'),
+        role: Yup.string()
+            .required('Role is required'),
     });
 
     const {register, handleSubmit, reset, setValue, errors, formState} = useForm({
         resolver: yupResolver(validationSchema)
     });
 
-    function onSubmit(data) {
-        return isAddMode
-            ? createEmployee(data)
-            : updateEmployee(id, data);
+    function submit(data) {
+        employeeService.onSubmit(id, data, isAddMode, history)
     }
-
-    function createEmployee(data) {
-        return employeeService.create(data)
-            .then(() => {
-                alertService.success('Employee added', {keepAfterRouteChange: true});
-                history.push('.');
-            })
-            .catch(alertService.error);
-    }
-
-    function updateEmployee(id, data) {
-        return employeeService.update(id, data)
-            .then(() => {
-                alertService.success('Employee updated', {keepAfterRouteChange: true});
-                history.push('..');
-            })
-            .catch(alertService.error);
-    }
-
-    const [employee, setEmployee] = useState({});
 
     useEffect(() => {
         if (!isAddMode) {
-            employeeService.getById(id).then(employee => {
+            employeeController.getById(id).then(employee => {
                 const fields = ['title', 'firstName', 'lastName', 'email', 'role'];
                 fields.forEach(field => setValue(field, employee[field]));
                 setEmployee(employee);
@@ -63,36 +53,12 @@ function EmployeesAddEdit({history, match}) {
         }
     }, []);
 
-    const [managers, setManagers] = useState("");
-
-    const [employees, setEmployees] = useState("");
-
     useEffect(() => {
-        employeeService.getAll().then(x => setEmployees(x));
+        employeeController.getAll().then(x => setEmployees(x));
     }, []);
 
-    // const Manager = () => (
-    //     <div className="form-group col-5">
-    //         <label>Manager</label>
-    //         <select
-    //             name="managerId"
-    //             ref={register}
-    //             onChange={(e) => {
-    //                 const selectedEmployee = e.target.value;
-    //                 setManagers(selectedEmployee);
-    //             }}
-    //             className={`form-control ${errors.manager ? 'is-invalid' : ''}`}>
-    //             <option value=""/>
-    //             {employees && employees.map(manager =>
-    //                 <option value={manager.employeeId}>{manager.firstName} {manager.lastName}</option>
-    //             )}
-    //         </select>
-    //         <div className="invalid-feedback">{errors.manager?.message}</div>
-    //     </div>
-    // )
-
     return (
-        <form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
+        <form onSubmit={handleSubmit(submit)} onReset={reset}>
             <h1>{isAddMode ? 'Add Employee' : 'Edit Employee'}</h1>
             <div className="form-row">
                 <div className="form-group col-5">
@@ -124,6 +90,7 @@ function EmployeesAddEdit({history, match}) {
                 <div className="form-group col-3">
                     <label>Role</label>
                     <select name="role" ref={register}
+                            onChange={handleRoleChange}
                             className={`form-control ${errors.role ? 'is-invalid' : ''}`}>
                         <option value=""/>
                         <option value="employee">Employee</option>
@@ -133,28 +100,28 @@ function EmployeesAddEdit({history, match}) {
                     <div className="invalid-feedback">{errors.role?.message}</div>
                 </div>
             </div>
-            {/*{!showManagerField ? null : (*/}
-            <div className="form-group col-5">
-                <label>Manager</label>
-                <select
-                    name="managerId"
-                    ref={register}
-                    onChange={(e) => {
-                        const selectedEmployee = e.target.value;
-                        setManagers(selectedEmployee);
-                    }}
-                    className={`form-control ${errors.managerId ? 'is-invalid' : ''}`}>
-                    <option value=""/>
-                    {employees && employees.map(manager =>
-                        <option value={manager.employeeId}>
-                            {manager.manager ? "(Manager)" : null}
-                            {manager.ceo ? "(CEO)" : null}
-                            {manager.firstName} {manager.lastName}</option>
-                    )}
-                </select>
-                <div className="invalid-feedback">{errors.managerId?.message}</div>
-            </div>
-            {/*)}*/}
+            {!showManagerField ? null : (
+                <div className="form-group col-5">
+                    <label>Manager</label>
+                    <select
+                        name="managerId"
+                        ref={register}
+                        onChange={(e) => {
+                            const selectedEmployee = e.target.value;
+                            setManagers(selectedEmployee);
+                        }}
+                        className={`form-control ${errors.managerId ? 'is-invalid' : ''}`}>
+                        <option value=""/>
+                        {employees && employees.map(manager =>
+                            <option value={manager.employeeId}>
+                                {manager.manager ? "(Manager)" : null}
+                                {manager.ceo ? "(CEO)" : null}
+                                {manager.firstName} {manager.lastName}</option>
+                        )}
+                    </select>
+                    <div className="invalid-feedback">{errors.managerId?.message}</div>
+                </div>
+            )}
             <div className="form-group">
                 <button type="submit" disabled={formState.isSubmitting} className="btn btn-primary">
                     {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"/>}

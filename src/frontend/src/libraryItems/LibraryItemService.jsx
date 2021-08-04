@@ -11,7 +11,6 @@ function onSubmit(libraryItemId, data, isAddMode, history) {
 }
 
 function createLibraryItem(data, history) {
-    console.log("Service data: ", data);
     return libraryItemController.create(data)
         .then(() => {
             alertService.success('Library item added', {keepAfterRouteChange: true});

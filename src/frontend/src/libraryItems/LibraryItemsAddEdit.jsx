@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
 
-import {categoryService, libraryItemController} from '@/_services';
+import {categoryController, libraryItemController} from '@/_services';
 import {libraryItemService} from "@/libraryItems/LibraryItemService";
 import ToggleItemFields from "@/libraryItems/ToggleItemFields";
 
@@ -48,7 +48,7 @@ function LibraryItemsAddEdit({history, match}) {
     }
 
     useEffect(() => {
-        categoryService.getAll().then(x => setCategories(x));
+        categoryController.getAll().then(x => setCategories(x));
     }, []);
 
     return (
