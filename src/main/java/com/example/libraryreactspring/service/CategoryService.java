@@ -20,7 +20,6 @@ public class CategoryService {
         this.validator = validator;
     }
 
-
     public List<Category> getCategories() {
         return categoryRepository.findAll();
     }
@@ -29,9 +28,13 @@ public class CategoryService {
         return categoryRepository.findById(categoryIdPk).orElseThrow(RuntimeException::new);
     }
 
+    private Category saveCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
     public Category createCategory(Category category) {
         checkIfNameExists(category);
-        categoryRepository.save(category);
+        saveCategory(category);
         return category;
     }
 
@@ -39,7 +42,7 @@ public class CategoryService {
         List<Category> categoriesList = getCategories();
         for (Category categoryFromList : categoriesList) {
             if (categoryFromList.getCategoryName().equals(category.getCategoryName())) {
-                validator.validate("Category name must be unique, please choose another genre", category);
+                validator.errorMessage("Category name must be unique, please choose another genre", category);
             }
         }
     }
@@ -48,7 +51,7 @@ public class CategoryService {
         Category categoryToUpdate = getCategoryById(categoryIdPk);
         checkIfNameExists(category);
         categoryToUpdate.setCategoryName(category.getCategoryName());
-        categoryToUpdate = categoryRepository.save(category);
+        categoryToUpdate = saveCategory(category);
         return categoryToUpdate;
     }
 

@@ -16,7 +16,7 @@ public class ValidatorMessage {
         this.validator = validator;
     }
 
-    public void validate(String errorMessage, Object target) {
+    public void errorMessage(String errorMessage, Object target) {
         Set<ConstraintViolation<Object>> violations = validator.validate(target);
         StringBuilder stringBuilder = new StringBuilder();
         for (ConstraintViolation<Object> constraintViolation : violations) {
