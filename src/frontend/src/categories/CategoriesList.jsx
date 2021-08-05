@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 
-import {categoryController} from '@/_services';
+import {alertService, categoryController} from '@/_services';
 
 function CategoriesList({match}) {
     const {path} = match;
@@ -20,7 +20,7 @@ function CategoriesList({match}) {
         }));
         categoryController.delete(categoryIdPk).then(() => {
             setCategories(category => category.filter(x => x.categoryIdPk !== categoryIdPk));
-        });
+        }).catch(alertService.error);
     }
 
     return (

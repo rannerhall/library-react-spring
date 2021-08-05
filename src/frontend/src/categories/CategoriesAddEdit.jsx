@@ -4,11 +4,14 @@ import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 
-import {categoryController, alertService} from '@/_services';
+import {categoryController} from '@/_services';
+import {categoryService} from "@/categories/CategoryService";
 
 function CategoriesAddEdit({history, match}) {
     const {id} = match.params;
     const isAddMode = !id;
+
+    const [category, setCategory] = useState({});
 
     const validationSchema = Yup.object().shape({
         categoryName: Yup.string()
@@ -19,31 +22,9 @@ function CategoriesAddEdit({history, match}) {
         resolver: yupResolver(validationSchema)
     });
 
-    function onSubmit(data) {
-        return isAddMode
-            ? createCategory(data)
-            : updateCategory(id, data);
+    function submit(data) {
+        categoryService.onSubmit(id, data, isAddMode, history)
     }
-
-    function createCategory(data) {
-        return categoryController.create(data)
-            .then(() => {
-                alertService.success('Category added', {keepAfterRouteChange: true});
-                history.push('.');
-            })
-            .catch(alertService.error);
-    }
-
-    function updateCategory(id, data) {
-        return categoryController.update(id, data)
-            .then(() => {
-                alertService.success('Category updated', {keepAfterRouteChange: true});
-                history.push('..');
-            })
-            .catch(alertService.error);
-    }
-
-    const [category, setCategory] = useState({});
 
     useEffect(() => {
         if (!isAddMode) {
@@ -56,7 +37,7 @@ function CategoriesAddEdit({history, match}) {
     }, []);
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
+        <form onSubmit={handleSubmit(submit)} onReset={reset}>
             <h1>{isAddMode ? 'Add Category' : 'Edit Category'}</h1>
             <div className="form-row">
                 <div className="form-group col-5">
