@@ -28,8 +28,8 @@ public class CategoryService {
         return categoryRepository.findById(categoryIdPk).orElseThrow(RuntimeException::new);
     }
 
-    private Category saveCategory(Category category) {
-        return categoryRepository.save(category);
+    private void saveCategory(Category category) {
+        categoryRepository.save(category);
     }
 
     public Category createCategory(Category category) {
@@ -51,13 +51,15 @@ public class CategoryService {
         Category categoryToUpdate = getCategoryById(categoryIdPk);
         checkIfNameExists(category);
         categoryToUpdate.setCategoryName(category.getCategoryName());
-        categoryToUpdate = saveCategory(category);
+        saveCategory(categoryToUpdate);
         return categoryToUpdate;
     }
 
     public void deleteCategory(Long categoryId) {
         Category categoryIdToDelete = getCategoryById(categoryId);
-        if (categoryIdToDelete != null) {
+        if (!categoryIdToDelete.getLibraryItems().isEmpty()) {
+            validator.errorMessage("Error: Category is used, please delete library item/items that contain category", categoryIdToDelete);
+        } else {
             categoryRepository.deleteById(categoryId);
         }
     }
