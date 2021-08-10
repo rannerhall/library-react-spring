@@ -94,7 +94,7 @@ public class EmployeeService {
         employeeToUpdate.setFirstName(employee.getFirstName());
         employeeToUpdate.setLastName(employee.getLastName());
         employeeToUpdate.setSalary(employee.getSalary());
-        employeeToUpdate = saveEmployee(employee);
+        saveEmployee(employeeToUpdate);
         return employeeToUpdate;
     }
 

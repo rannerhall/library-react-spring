@@ -40,6 +40,10 @@ public class LibraryItemService {
         return categoryRepository.findAll();
     }
 
+    private void saveLibraryItem(LibraryItem libraryItem) {
+        libraryItemRepository.save(libraryItem);
+    }
+
     public LibraryItem createLibraryItem(@Valid LibraryItem libraryItem, String categoryName) {
         for (Category category : getAllCategories()) {
             if (categoryName.equals(category.getCategoryName())) {
@@ -54,17 +58,18 @@ public class LibraryItemService {
 
     public LibraryItem editLibraryItem(Long libraryItemIdPk, LibraryItem libraryItem) {
         LibraryItem libraryItemToUpdate = getLibraryItemById(libraryItemIdPk);
-        libraryItem.setTitle(libraryItemToUpdate.getTitle());
-        libraryItem.setAuthor(libraryItemToUpdate.getAuthor());
-
         if (libraryItemToUpdate.isBorrowable()) {
+            libraryItemToUpdate.setTitle(libraryItem.getTitle());
+            libraryItemToUpdate.setAuthor(libraryItem.getAuthor());
             libraryItemToUpdate.setBorrower(libraryItem.getBorrower());
             libraryItemToUpdate.setBorrowable(false);
             libraryItemToUpdate.setBorrowDate(LocalDate.now());
-            libraryItemToUpdate = libraryItemRepository.save(libraryItem);
+            saveLibraryItem(libraryItemToUpdate);
             return libraryItemToUpdate;
         }
         if (!libraryItemToUpdate.isBorrowable()) {
+            libraryItemToUpdate.setTitle(libraryItem.getTitle());
+            libraryItemToUpdate.setAuthor(libraryItem.getAuthor());
             libraryItemToUpdate.setBorrower(null);
             libraryItemToUpdate.setBorrowable(true);
             libraryItemToUpdate.setBorrowDate(null);
@@ -75,7 +80,7 @@ public class LibraryItemService {
         libraryItemToUpdate.setPages(libraryItem.getPages());
         libraryItemToUpdate.setTitle(libraryItem.getTitle());
         libraryItemToUpdate.setType(libraryItem.getType());
-        libraryItemToUpdate = libraryItemRepository.save(libraryItem);
+        saveLibraryItem(libraryItemToUpdate);
         return libraryItemToUpdate;
     }
 
