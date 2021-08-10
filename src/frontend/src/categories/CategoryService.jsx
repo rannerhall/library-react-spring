@@ -11,7 +11,7 @@ function onSubmit(employeeId, data, isAddMode, history) {
         : updateEmployee(employeeId, data, history);
 }
 
-function createEmployee(data) {
+function createEmployee(data, history) {
     return categoryController.create(data)
         .then(() => {
             alertService.success('Category added', {keepAfterRouteChange: true});
@@ -20,7 +20,7 @@ function createEmployee(data) {
         .catch(alertService.error);
 }
 
-function updateEmployee(id, data) {
+function updateEmployee(id, data, history) {
     return categoryController.update(id, data)
         .then(() => {
             alertService.success('Category updated', {keepAfterRouteChange: true});

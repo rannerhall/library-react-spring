@@ -41,7 +41,7 @@ function CategoriesAddEdit({history, match}) {
             <h1>{isAddMode ? 'Add Category' : 'Edit Category'}</h1>
             <div className="form-row">
                 <div className="form-group col-5">
-                    <label>Category Name</label>
+                    <label>Category Name (Category name must be unique)</label>
                     <input name="categoryName" type="text" ref={register}
                            className={`form-control ${errors.categoryName ? 'is-invalid' : ''}`}/>
                     <div className="invalid-feedback">{errors.categoryName?.message}</div>

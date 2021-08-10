@@ -36,7 +36,7 @@ function LibraryItemsAddEdit({history, match}) {
     useEffect(() => {
         if (!isAddMode) {
             libraryItemController.getById(id).then(libraryItems => {
-                const fields = ['type', 'categoryName', 'title', 'author', 'pages', 'runTimeInMinutes', 'borrower'];
+                const fields = ['type', 'categoryName', 'title', 'author', 'pages', 'runTimeInMinutes'];
                 fields.forEach(field => setValue(field, libraryItems[field]));
                 setLibraryItem(libraryItems);
             });
