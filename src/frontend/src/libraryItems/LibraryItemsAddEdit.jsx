@@ -17,6 +17,7 @@ function LibraryItemsAddEdit({history, match}) {
 
     const {
         handleTypeChange,
+        showFields,
         showTitleField,
         showAuthorField,
         showPageField,
@@ -35,6 +36,7 @@ function LibraryItemsAddEdit({history, match}) {
 
     useEffect(() => {
         if (!isAddMode) {
+            showFields();
             libraryItemController.getById(id).then(libraryItems => {
                 const fields = ['type', 'categoryName', 'title', 'author', 'pages', 'runTimeInMinutes'];
                 fields.forEach(field => setValue(field, libraryItems[field]));

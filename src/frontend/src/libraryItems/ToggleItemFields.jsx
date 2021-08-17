@@ -11,6 +11,14 @@ const ToggleItemFields = () => {
     const [showPageField, setShowPageField] = useState(false);
     const [showRunTimeField, setShowRunTimeField] = useState(false);
 
+    const showFields = () => {
+        setShowTitleField(true);
+        setShowAuthorField(true);
+        setShowCategoryField(true);
+        setShowPageField(true);
+        setShowRunTimeField(true);
+    }
+
     const [customValidationSchema, setCustomValidationSchema] = useState();
 
     const {
@@ -38,6 +46,7 @@ const ToggleItemFields = () => {
 
     return {
         handleTypeChange: handleTypeChange,
+        showFields: showFields,
         showTitleField,
         showAuthorField,
         showPageField,
