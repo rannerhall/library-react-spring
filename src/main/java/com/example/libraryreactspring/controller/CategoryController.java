@@ -11,11 +11,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @RestController
-@RequestMapping("api/library/")
+@RequestMapping("api/library/category")
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private static final String CATEGORY = "/category";
     private static final String CATEGORY_ID_PK = "/{categoryIdPk}";
 
     @Inject
@@ -23,29 +22,29 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping(CATEGORY)
+    @GetMapping()
     public Iterable<Category> getCategories() {
         return categoryService.getCategories();
     }
 
-    @GetMapping(CATEGORY + CATEGORY_ID_PK)
+    @GetMapping(CATEGORY_ID_PK)
     public Category getCategoryById(@PathVariable Long categoryIdPk) {
         return categoryService.getCategoryById(categoryIdPk);
     }
 
-    @PostMapping(CATEGORY)
+    @PostMapping()
     public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) throws URISyntaxException {
         Category savedCategory = categoryService.createCategory(category);
         return ResponseEntity.created(new URI("/categories/" + savedCategory.getCategoryIdPk())).body(savedCategory);
     }
 
-    @PutMapping(CATEGORY + CATEGORY_ID_PK)
+    @PutMapping(CATEGORY_ID_PK)
     public ResponseEntity<Category> updateCategory(@PathVariable Long categoryIdPk, @RequestBody Category category) {
         Category currentCategory = categoryService.editCategory(categoryIdPk, category);
         return ResponseEntity.ok(currentCategory);
     }
 
-    @DeleteMapping(CATEGORY + CATEGORY_ID_PK)
+    @DeleteMapping(CATEGORY_ID_PK)
     public ResponseEntity<Category> deleteCategory(@PathVariable Long categoryIdPk) {
         categoryService.deleteCategory(categoryIdPk);
         return ResponseEntity.ok().build();

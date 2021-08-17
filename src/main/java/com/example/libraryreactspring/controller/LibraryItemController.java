@@ -14,11 +14,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 @RestController
-@RequestMapping("api/library")
+@RequestMapping("api/library/libraryItem")
 public class LibraryItemController {
 
     private final LibraryItemService libraryItemService;
-    private static final String LIBRARY_ITEM = "/libraryItem";
     private static final String LIBRARY_ITEM_ID_PK = "/{libraryItemIdPk}";
 
     @Inject
@@ -26,17 +25,17 @@ public class LibraryItemController {
         this.libraryItemService = libraryItemService;
     }
 
-    @GetMapping(LIBRARY_ITEM)
+    @GetMapping()
     public Set<LibraryItem> getLibraryItems() {
         return libraryItemService.getLibraryItems();
     }
 
-    @GetMapping(LIBRARY_ITEM + LIBRARY_ITEM_ID_PK)
+    @GetMapping(LIBRARY_ITEM_ID_PK)
     public LibraryItem getLibraryItemById(@PathVariable Long libraryItemIdPk) {
         return libraryItemService.getLibraryItemById(libraryItemIdPk);
     }
 
-    @PostMapping(LIBRARY_ITEM + "/{categoryName}")
+    @PostMapping("/{categoryName}")
     public ResponseEntity<LibraryItem> createLibraryItem(@Valid @RequestBody LibraryItem libraryItem, @PathVariable String categoryName) throws URISyntaxException {
         LibraryItem savedLibraryItem = libraryItemService.createLibraryItem(libraryItem, categoryName);
         String url = "/libraryItems/" + savedLibraryItem;
@@ -44,13 +43,13 @@ public class LibraryItemController {
         return ResponseEntity.created(new URI(url)).body(savedLibraryItem);
     }
 
-    @PutMapping(LIBRARY_ITEM + LIBRARY_ITEM_ID_PK)
+    @PutMapping(LIBRARY_ITEM_ID_PK)
     public ResponseEntity<LibraryItem> updateLibraryItem(@PathVariable Long libraryItemIdPk, @RequestBody LibraryItem libraryItem) {
         LibraryItem currentLibraryItem = libraryItemService.editLibraryItem(libraryItemIdPk, libraryItem);
         return ResponseEntity.ok(currentLibraryItem);
     }
 
-    @DeleteMapping(LIBRARY_ITEM + LIBRARY_ITEM_ID_PK)
+    @DeleteMapping(LIBRARY_ITEM_ID_PK)
     public ResponseEntity<LibraryItem> deleteCategory(@PathVariable Long libraryItemIdPk) {
         libraryItemService.deleteCategory(libraryItemIdPk);
         return ResponseEntity.ok().build();
