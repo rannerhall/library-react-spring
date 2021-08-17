@@ -1,5 +1,6 @@
 package com.example.libraryreactspring.service;
 
+import com.example.libraryreactspring.EmployeeEnum;
 import com.example.libraryreactspring.employeeUtils.CalculateSalaryCoefficient;
 import com.example.libraryreactspring.entity.Employee;
 import com.example.libraryreactspring.repository.EmployeeRepository;
@@ -16,10 +17,6 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final CalculateSalaryCoefficient calculateSalaryCoefficient;
     private final ValidatorMessage validator;
-
-    private static final String EMPLOYEE = "employee";
-    private static final String MANAGER = "manager";
-    private static final String CEO = "ceo";
 
     @Inject
     public EmployeeService(EmployeeRepository employeeRepository, CalculateSalaryCoefficient calculateSalaryCoefficient, ValidatorMessage validator) {
@@ -43,7 +40,8 @@ public class EmployeeService {
     public Employee createEmployee(@Valid Employee employee, String role, int rank, String managerId) {
         long parsedManagerId = Long.parseLong(managerId);
         employee.setSalary(calculateSalaryCoefficient.calculateSalary(employee, role, rank));
-        switch (role) {
+        EmployeeEnum employeeRole = EmployeeEnum.valueOf(role.toUpperCase());
+        switch (employeeRole) {
             case EMPLOYEE:
                 setAndValidateEmployee(employee, parsedManagerId);
                 break;
