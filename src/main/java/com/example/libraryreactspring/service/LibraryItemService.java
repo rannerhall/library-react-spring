@@ -48,7 +48,7 @@ public class LibraryItemService {
         for (Category category : getAllCategories()) {
             if (categoryName.equals(category.getCategoryName())) {
                 libraryItem.setBorrowable(!libraryItem.getType().equals(REFERENCE_BOOK));
-                libraryItemRepository.save(libraryItem);
+                saveLibraryItem(libraryItem);
                 category.addLibraryItem(libraryItem);
                 categoryRepository.save(category);
             }
@@ -56,31 +56,22 @@ public class LibraryItemService {
         return libraryItem;
     }
 
+    //@Todo edit
     public LibraryItem editLibraryItem(Long libraryItemIdPk, LibraryItem libraryItem) {
         LibraryItem libraryItemToUpdate = getLibraryItemById(libraryItemIdPk);
         if (libraryItemToUpdate.isBorrowable()) {
-            libraryItemToUpdate.setTitle(libraryItem.getTitle());
-            libraryItemToUpdate.setAuthor(libraryItem.getAuthor());
             libraryItemToUpdate.setBorrower(libraryItem.getBorrower());
             libraryItemToUpdate.setBorrowable(false);
             libraryItemToUpdate.setBorrowDate(LocalDate.now());
             saveLibraryItem(libraryItemToUpdate);
             return libraryItemToUpdate;
-        }
-        if (!libraryItemToUpdate.isBorrowable()) {
-            libraryItemToUpdate.setTitle(libraryItem.getTitle());
-            libraryItemToUpdate.setAuthor(libraryItem.getAuthor());
+        } else if (!libraryItemToUpdate.isBorrowable()) {
             libraryItemToUpdate.setBorrower(null);
             libraryItemToUpdate.setBorrowable(true);
             libraryItemToUpdate.setBorrowDate(null);
-            libraryItemToUpdate = libraryItemRepository.save(libraryItem);
+            saveLibraryItem(libraryItemToUpdate);
             return libraryItemToUpdate;
         }
-        libraryItemToUpdate.setAuthor(libraryItem.getAuthor());
-        libraryItemToUpdate.setPages(libraryItem.getPages());
-        libraryItemToUpdate.setTitle(libraryItem.getTitle());
-        libraryItemToUpdate.setType(libraryItem.getType());
-        saveLibraryItem(libraryItemToUpdate);
         return libraryItemToUpdate;
     }
 
