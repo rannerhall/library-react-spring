@@ -38,7 +38,7 @@ function LibraryItemsAddEdit({history, match}) {
         if (!isAddMode) {
             showFields();
             libraryItemController.getById(id).then(libraryItems => {
-                const fields = ['type', 'categoryName', 'title', 'author', 'pages', 'runTimeInMinutes'];
+                const fields = ['type', 'title', 'author', 'pages'];
                 fields.forEach(field => setValue(field, libraryItems[field]));
                 setLibraryItem(libraryItems);
             });

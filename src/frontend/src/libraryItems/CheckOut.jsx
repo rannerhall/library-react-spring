@@ -1,19 +1,20 @@
-import React from "react";
+import React, {useState} from "react";
 import {alertService, libraryItemController} from "@/_services";
 import {useForm} from "react-hook-form";
 import {Link} from "react-router-dom";
 
 function CheckOut({history, match}) {
     const {id} = match.params;
+    const [checkOut] = useState(true);
 
     const {register, handleSubmit, reset, errors, formState} = useForm({});
 
     function onSubmit(data) {
-        return checkOutLibraryItem(id, data);
+        return checkOutLibraryItem(id, data, checkOut);
     }
 
-    function checkOutLibraryItem(id, data) {
-        return libraryItemController.update(id, data)
+    function checkOutLibraryItem(id, data, checkOut) {
+        return libraryItemController.update(id, data, checkOut)
             .then(() => {
                 alertService.success('Checkout complete', {keepAfterRouteChange: true});
                 history.push('..');

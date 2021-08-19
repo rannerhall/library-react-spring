@@ -1,19 +1,20 @@
-import React from "react";
+import React, {useState} from "react";
 import {alertService, libraryItemController} from "@/_services";
 import {useForm} from "react-hook-form";
 import {Link} from "react-router-dom";
 
 function CheckIn({history, match}) {
     const {id} = match.params;
+    const [checkIn] = useState(true);
 
     const {handleSubmit, reset, formState} = useForm({});
 
     function onSubmit(data) {
-        return checkInLibraryItem(id, data);
+        return checkInLibraryItem(id, data, checkIn);
     }
 
-    function checkInLibraryItem(id, data) {
-        return libraryItemController.update(id, data)
+    function checkInLibraryItem(id, data, checkIn) {
+        return libraryItemController.update(id, data, checkIn)
             .then(() => {
                 alertService.success('Check in complete', {keepAfterRouteChange: true});
                 history.push('..');

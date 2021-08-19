@@ -12,6 +12,7 @@ const ToggleItemFields = () => {
     const [showRunTimeField, setShowRunTimeField] = useState(false);
 
     const showFields = () => {
+        setCustomValidationSchema(bookValidationSchema);
         setShowTitleField(true);
         setShowAuthorField(true);
         setShowCategoryField(true);
@@ -50,7 +51,6 @@ const ToggleItemFields = () => {
         showTitleField,
         showAuthorField,
         showPageField,
-        showRunTimeField,
         showCategoryField,
         customValidationSchema
     }

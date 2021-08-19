@@ -23,9 +23,12 @@ function create(params) {
     return fetchWrapper.post(`${baseUrl}/${params.categoryName}`, params);
 }
 
-function update(id, params) {
-    console.log(params);
-    return fetchWrapper.put(`${baseUrl}/${id}`, params);
+function update(id, params, checkOutOrIn) {
+    if (!checkOutOrIn) {
+        checkOutOrIn = false;
+    }
+    console.log(checkOutOrIn);
+    return fetchWrapper.put(`${baseUrl}/${id}/${checkOutOrIn}/${params.categoryName}`, params);
 }
 
 function _delete(id) {
