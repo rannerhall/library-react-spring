@@ -43,9 +43,9 @@ public class LibraryItemController {
         return ResponseEntity.created(new URI(url)).body(savedLibraryItem);
     }
 
-    @PutMapping(LIBRARY_ITEM_ID_PK)
-    public ResponseEntity<LibraryItem> updateLibraryItem(@PathVariable Long libraryItemIdPk, @RequestBody LibraryItem libraryItem) {
-        LibraryItem currentLibraryItem = libraryItemService.editLibraryItem(libraryItemIdPk, libraryItem);
+    @PutMapping(LIBRARY_ITEM_ID_PK + "/{checkOut}/{categoryName}")
+    public ResponseEntity<LibraryItem> updateLibraryItem(@PathVariable Long libraryItemIdPk, @PathVariable boolean checkOut, @PathVariable String categoryName, @RequestBody LibraryItem libraryItem) {
+        LibraryItem currentLibraryItem = libraryItemService.editLibraryItem(libraryItemIdPk, libraryItem, checkOut, categoryName);
         return ResponseEntity.ok(currentLibraryItem);
     }
 

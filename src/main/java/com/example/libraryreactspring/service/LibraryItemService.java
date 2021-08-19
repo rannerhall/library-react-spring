@@ -56,22 +56,46 @@ public class LibraryItemService {
         return libraryItem;
     }
 
-    //@Todo edit
-    public LibraryItem editLibraryItem(Long libraryItemIdPk, LibraryItem libraryItem) {
+    public LibraryItem editLibraryItem(Long libraryItemIdPk, LibraryItem libraryItem, boolean checkOutOrIn, String categoryName) {
         LibraryItem libraryItemToUpdate = getLibraryItemById(libraryItemIdPk);
-        if (libraryItemToUpdate.isBorrowable()) {
-            libraryItemToUpdate.setBorrower(libraryItem.getBorrower());
-            libraryItemToUpdate.setBorrowable(false);
-            libraryItemToUpdate.setBorrowDate(LocalDate.now());
-            saveLibraryItem(libraryItemToUpdate);
-            return libraryItemToUpdate;
-        } else if (!libraryItemToUpdate.isBorrowable()) {
-            libraryItemToUpdate.setBorrower(null);
-            libraryItemToUpdate.setBorrowable(true);
-            libraryItemToUpdate.setBorrowDate(null);
-            saveLibraryItem(libraryItemToUpdate);
-            return libraryItemToUpdate;
+        if (checkOutOrIn) {
+            if (libraryItemToUpdate.isBorrowable()) {
+                return checkOutLibraryItem(libraryItemToUpdate, libraryItem);
+            } else if (!libraryItemToUpdate.isBorrowable()) {
+                return checkInLibraryItem(libraryItemToUpdate);
+            }
         }
+        return editItem(libraryItemToUpdate, libraryItem, categoryName);
+    }
+
+    private LibraryItem editItem(LibraryItem libraryItemToUpdate, LibraryItem libraryItem, String categoryName) {
+        libraryItemToUpdate.setTitle(libraryItem.getTitle());
+        libraryItemToUpdate.setAuthor(libraryItem.getAuthor());
+        libraryItemToUpdate.setPages(libraryItem.getPages());
+        libraryItemToUpdate.setRunTimeMinutes(libraryItem.getRunTimeMinutes());
+        for (Category category : getAllCategories()) {
+            if (categoryName.equals(category.getCategoryName())) {
+                saveLibraryItem(libraryItemToUpdate);
+                category.addLibraryItem(libraryItemToUpdate);
+                categoryRepository.save(category);
+            }
+        }
+        return libraryItemToUpdate;
+    }
+
+    private LibraryItem checkInLibraryItem(LibraryItem libraryItemToUpdate) {
+        libraryItemToUpdate.setBorrower(null);
+        libraryItemToUpdate.setBorrowable(true);
+        libraryItemToUpdate.setBorrowDate(null);
+        saveLibraryItem(libraryItemToUpdate);
+        return libraryItemToUpdate;
+    }
+
+    private LibraryItem checkOutLibraryItem(LibraryItem libraryItemToUpdate, LibraryItem libraryItem) {
+        libraryItemToUpdate.setBorrower(libraryItem.getBorrower());
+        libraryItemToUpdate.setBorrowable(false);
+        libraryItemToUpdate.setBorrowDate(LocalDate.now());
+        saveLibraryItem(libraryItemToUpdate);
         return libraryItemToUpdate;
     }
 
